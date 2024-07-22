@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/scheerlaaws/Image_Builder.git'
+                git branch: 'feature/imagebuilder, url: 'https://github.com/scheerlaaws/Image_Builder.git'
             }
         }
         stage('Terraform init') {
