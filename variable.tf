@@ -1,19 +1,19 @@
 variable "vpc_id" {
   type        = string
   description = "(Required) VPC ID to deploy the EC2 Image Builder Environment."
-  default     = "vpc-0d2d200adb4baca9a"
+  default     = "vpc-015c18f9a860b8bd8"
 }
 
 variable "subnet_id" {
   type        = string
   description = "(Required) Subnet ID to deploy the EC2 Image Builder Environment."
-  default     = "subnet-04fde4dd0564439bb"
+  default     = "subnet-0beaed22a154db7e2"
 }
 
 variable "name" {
   type        = string
   description = "(Required) Choose a name for the project which will be the prefix for every resource"
-  default     = "myapp"
+  default     = ""
 }
 
 variable "ami_name" {
@@ -44,9 +44,9 @@ variable "instance_types" {
   type        = list(string)
   description = <<-EOD
   (Optional) Instance type for the EC2 Image Builder Instances. 
-  Will be set by default to c5.large. Please check the AWS Pricing for more information about the instance types.
+  Will be set by default to t2.small. Please check the AWS Pricing for more information about the instance types.
   EOD
-  default     = ["t2.micro"]
+  default     = ["t2.xlarge"]
 }
 
 variable "recipe_version" {
@@ -201,5 +201,5 @@ variable "imagebuilder_image_recipe_kms_key_arn" {
 variable "component_arn" {
   description = "The ARN of the Image Builder component"
   type        = string
-  default     = "arn:aws:imagebuilder:us-east-1:851725189052:component/test-component/1.0.0/1"
+  default     = "arn:aws:imagebuilder:us-east-1:aws:component/aws-cli-version-2-linux/x.x.x"
 }

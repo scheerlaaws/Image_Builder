@@ -224,6 +224,35 @@ resource "aws_imagebuilder_image_pipeline" "imagebuilder_image_pipeline" {
   name = "${var.name}-pipeline"
   tags = var.tags
 }
+#######################################################################################################
+#Cloud watch agent installation
+#######################################################################################################
+resource "aws_imagebuilder_component" "cloudwatch_agent" {
+  name     = "cloudwatch_agent-installation"
+  platform = "Linux"
+
+  data = yamlencode({
+    schemaVersion = "1.0",
+    phases = [{
+      name  = "build",
+      steps = [{
+        name      = "install-cloudwatch-agent"
+        action    = "ExecuteBash"
+        inputs = {
+          commands = [
+            "sudo yum install -y amazon-cloudwatch-agent",
+            "sudo systemctl enable amazon-cloudwatch-agent",
+            "sudo systemctl start amazon-cloudwatch-agent"
+            ]
+        }
+      }]
+    }]
+  })
+
+  version = "1.0.0"
+
+} 
+  
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -232,7 +261,6 @@ resource "aws_imagebuilder_image_pipeline" "imagebuilder_image_pipeline" {
 resource "aws_imagebuilder_image_recipe" "imagebuilder_image_recipe" {
   name         = "${var.name}-image-recipe"
   parent_image = data.aws_ami.source_ami.id
-  #parent_image  = "arn:aws:imagebuilder:us-east-1:aws:image/amazon-linux-2-x86-64-standard/2023.07.14"
   version      = var.recipe_version
   
   # it seems there is a bug on checkov for check CKV_AWS_200, even supressing it doesn't help, had to add the below block_device_mapping to pass
@@ -253,17 +281,18 @@ resource "aws_imagebuilder_image_recipe" "imagebuilder_image_recipe" {
   }
   
   component {
-    component_arn = var.component_arn
+    component_arn = aws_imagebuilder_component.cloudwatch_agent.arn
   }
+  
 
-  dynamic "component" {
-    for_each = {
-      for key, value in data.aws_imagebuilder_components.managed_components : key => value.arns
-    }
-    content {
-      component_arn = tolist(component.value)[0]
-    }
-  }
+  #dynamic "component" {
+   # for_each = {
+   #   for key, value in data.aws_imagebuilder_components.managed_components : key => value.arns
+   # }
+  #  content {
+  #    component_arn = tolist(component.value)[0]
+  #  }
+  #}
 
  # dynamic "component" {
  #   for_each = var.build_component_arn
