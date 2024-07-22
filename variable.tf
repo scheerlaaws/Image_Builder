@@ -174,7 +174,7 @@ variable "terminate_on_failure" {
 
 variable "create_security_group" {
   description = "(Optional) Create security group for EC2 Image Builder instances"
-  type        = string
+  type        = bool
   default     = "sg-0fbc8b78c65ba9b46"
 }
 
